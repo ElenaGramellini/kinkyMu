@@ -1,5 +1,7 @@
 import math
 import random
+import numpy as np
+
 class DetectorBox:
     def __init__(self, center_x, center_y, center_z, width, height, depth):
         self.center_x = center_x
@@ -55,13 +57,21 @@ class CosmicRay(DetectorBox):
 
     def __init__(self, box):
         super().__init__(box.center_x, box.center_y, box.center_z, box.width, box.height, box.depth)
-        self.energy =  random.uniform(0, math.pi)
         self.x = random.uniform(-5*self.width, 5*self.width)
         self.y = random.uniform(-5*self.depth, 5*self.depth)
         self.z = self.height/2.
-        self.theta = random.uniform(0, math.pi/2)
         self.phi   = random.uniform(0, 2*math.pi)
-
+        ###
+        # Mean and covariance matrix of the Gaussian distribution
+        mean = [2, 0]
+        cov = [[1, 0.5], [0.5, 1]]
+        # Generate two random numbers from the 2D Gaussian distribution
+        r = np.random.multivariate_normal(mean, cov, 1).T
+        #print(r.shape)
+        self.theta  = (r[0])[0]
+        self.energy = (r[1])[0]
+        #print (self.energy,  self.theta)
+        
     def display_info(self):
         print("Cosmic Ray Information:")
         print("Energy:", self.Energy)
