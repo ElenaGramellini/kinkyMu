@@ -13,9 +13,7 @@ What we need:
      [ X ] Write a simple (En, x,y,z,theta,phi) 6D flat distribution
      [ X ] Write a unit code that checks that flat distribution
      [ X ] Implement z = fixed, (x,y,phi) = flat,  (En, theta) = Phi(En,theta) generator
-     [   ] Implement (En, theta) = 2D gaussian
-     [   ] Implement (En, theta) = Phi(En,theta) generator	
-     [   ] Check I get what I want with the unit code
+     [   ] Write a random Generator of the flux (En, theta) = Phi(En,theta) generator	
      [   ] Check I get what I want with the unit code
 [  ] to calculate the lenght inside mock detector
 [  ] to check the calculation is correct
