@@ -8,8 +8,8 @@ display = Display()
 
 ## Let's define the position and dimensions of the detector box
 ## cause we need to calculate the cosmics in the box
-#pDUNE = DetectorBox(0, 0, 0, 7.2, 7.1, 6)
-pDUNE = DetectorBox(0, 0, 0, 2, 10, 30)
+pDUNE = DetectorBox(0, 0, 0, 7.2, 7.1, 6)
+#pDUNE = DetectorBox(0, 0, 0, 2, 10, 30)
 pDUNE.describe()
 
 x      = []
@@ -53,11 +53,11 @@ axs[1, 0].set_title('Energy [GeV]')
 
 # Plot in the fifth subplot (bottom-center)
 axs[1, 1].hist(theta)
-axs[1, 1].set_title('Theta [deg]')
+axs[1, 1].set_title('Theta [rad]')
 
 # Plot in the sixth subplot (bottom-right)
 axs[1, 2].hist(phi)
-axs[1, 2].set_title('Phi [deg]')
+axs[1, 2].set_title('Phi [rad]')
 
 # Adjust spacing between subplots
 plt.tight_layout()

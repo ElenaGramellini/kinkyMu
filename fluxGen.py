@@ -13,18 +13,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 import math
-
+import pandas as pd
 
 # example parametric function
 def flux(E, theta, Ec):
-    I0 = 88.0
+    I0 = 70.7
     E0 = 4.29 # GeV
     epsilon = 854
-    n = 3.09
+    n = 3.01
     Rd = 174
     D = np.sqrt(Rd*Rd*np.cos(theta) + 2*Rd + 1 ) - Rd*np.cos(theta)
-    N = (n - 1)*((E0 + Ec)**(n - 1))
-    #N=100
+    #N = 1/( (n - 1)*((E0 + Ec)**(n - 1)))
+    N=46.99501630666583
     P0 = I0*N
     P1 = (E0 + E)** (-n)
     P2 = (1+E/epsilon)**(-1)
@@ -33,19 +33,28 @@ def flux(E, theta, Ec):
     return x
 
 
+df = pd.read_csv("BESS.txt",delimiter='\s+')
+df['mu'] = df['muP'] + df['muM']
+
+plt.plot(df['p'], df['mu'], label='Data PLB94,35(2004)', marker='o')
+
 # Generate parameter values
 t_values = np.linspace(0, 10000, 10000)
 
 # Evaluate the parametric function
-y_values = flux(t_values, 0, 10000)
+#y_values = flux(t_values, 0, 10000)
+y_values = flux(t_values, 0, 1)
+df['fitFunc'] = flux(df['p'], 0, 1)
+df['scale'] = df['mu']/df['fitFunc']
+print(df['scale'].mean())
+
 
 # Create the plot
-plt.loglog(t_values, y_values)
-#plt.loglog(x, y)
-plt.xlabel('X')
-plt.ylabel('Y')
+plt.loglog(t_values, y_values, label='parametric function to be used in simulation')
+plt.xlabel('Momentun P (GeV/c)')
+plt.ylabel('Muon flux [m-2sec-1sr-1(GeV/c)-1]')
 plt.title('Parametric Function: Flux')
 plt.grid(True)
-
+plt.legend()
 # Show the plot
 plt.show()
