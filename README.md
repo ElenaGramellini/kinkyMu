@@ -1,4 +1,19 @@
 # kinkyMu
+Just run
+> python main.py
+for main simulation of cosmic rays
+
+
+Output:
+File with a header and event list.
+The header listis the simulation conditions:
+ - x,y,z, phi, theta energy distributions
+ - detector size and location
+
+Event list has 4 columns:
+- Event ID, Energy, Lenght, theta
+
+
 Draft of work and code organization.
 Let's start from the end: I want to provide a 2D pdf in (Energy, Length) for muons in a mock detector geometry.
 What we need:
@@ -18,3 +33,5 @@ What we need:
 [  ] to calculate the lenght inside mock detector
 [  ] to check the calculation is correct
      [   ] Check I get what I want with the unit code
+
+[ X ] write output file
