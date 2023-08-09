@@ -130,6 +130,21 @@ class CosmicRay(DetectorBox):
 
         return x1, y1, z1
 
+
+    def line_parameters(self):
+        # Compute direction cosines
+        cos_theta = math.cos(self.theta)
+        sin_theta = math.sin(self.theta)
+        cos_phi = math.cos(self.phi)
+        sin_phi = math.sin(self.phi)
+        
+        # Compute direction vector
+        dx = sin_theta * cos_phi 
+        dy = sin_theta * sin_phi
+        dz = cos_theta
+
+        return self.x, self.y, self.z1, dx, dy, dz
+
     # compute line CR line beginning and end for visualization purpose
     def ends(self):
         # Compute direction cosines

@@ -4,14 +4,24 @@ from utilities import CosmicRay
 from utilities import EventWriter
 from vis import Display
 import time
+import argparse
 
+# Create an argument parser
+parser = argparse.ArgumentParser(description='A script to demonstrate argparse.')
+# Add an argument for an integer
+parser.add_argument('--Nevts', type=int, default=10, help='Number of events to simulate')
+# Parse the command-line arguments
+args = parser.parse_args()
 
-#Let's start with initializing things
 
 # Do I want a small display of the cosmic rays?
 DISPLAY = False
 # Number of events to be generated
-Nevt = 10000 
+# Get the value of the 'number' argument
+Nevt = args.Nevts
+
+
+#Let's start with initializing things
 start_time = time.time()
 
 # Let's instatiate the visualization tool
@@ -33,6 +43,7 @@ z      = []
 energy = []
 theta  = []
 phi    = []
+length = []
 
 
 
@@ -56,10 +67,10 @@ for i in range(Nevt):
     this_energy = cr.energy 
     this_theta  = cr.theta  
     this_phi    = cr.phi    
-    length      = cr.calculateLenght()
+    this_length = cr.calculateLenght()
 
     # Write important bits to file
-    event_writer.writeEvent([i, this_energy, length, this_theta])
+    event_writer.writeEvent([i, this_energy, this_length, this_theta])
 
     # The following array are for plotting purposes only
     x      .append(this_x      )
@@ -68,6 +79,7 @@ for i in range(Nevt):
     energy .append(this_energy )
     theta  .append(this_theta  )
     phi    .append(this_phi    )
+    length .append(this_length )
     
     # Let's add a little display tool
     if i < 10 and DISPLAY:
@@ -81,7 +93,7 @@ print("Generating ", Nevt, "events in ")
 print(f"{execution_time:.3f} minutes")
         
 # Create the figure and subplots
-fig, axs = plt.subplots(2, 3, figsize=(12, 8))
+fig, axs = plt.subplots(2, 4, figsize=(12, 8))
 # Plot in the first subplot (top-left)
 axs[0, 0].hist(x)
 axs[0, 0].set_title('x [m]')
@@ -105,6 +117,11 @@ axs[1, 1].set_title('Theta [rad]')
 # Plot in the sixth subplot (bottom-right)
 axs[1, 2].hist(phi)
 axs[1, 2].set_title('Phi [rad]')
+
+
+# Plot in the sixth subplot (bottom-right)
+axs[1, 3].hist(length)
+axs[1, 3].set_title('length [m]')
 
 # Adjust spacing between subplots
 plt.tight_layout()
