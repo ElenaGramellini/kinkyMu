@@ -167,9 +167,131 @@ class CosmicRay(DetectorBox):
         end   = [x1, y1, z1]  
         return (begin , end)
 
+    def plane_normal_from_points(self, point1, point2, point3):
+        vector1 = np.array(point2) - np.array(point1)
+        vector2 = np.array(point3) - np.array(point1)
+        normal_vector = np.cross(vector1, vector2)
+        #print(len(normal_vector))
+        return normal_vector
+
+    def line_direction_from_points(self, point1, point2):
+        return np.array(point2) - np.array(point1)
+
+    def line_plane_intersection(self, line_point, line_direction, plane_normal, plane_point):
+        # Calculate the parameter t
+        t = -np.dot(plane_normal, line_point - plane_point) / np.dot(plane_normal, line_direction)
+        # Calculate the intersection point
+        intersection_point = line_point + t * line_direction
+        return intersection_point
+
+
+    def plane_CR_intersection(self, p1, p2, p3, pl1, pl2):
+        plane_normal       = self.plane_normal_from_points(p1, p2, p3)
+        line_direction     = self.line_direction_from_points(pl1, pl2)
+        intersection_point = self.line_plane_intersection(pl1,line_direction, plane_normal, p1 )
+        # Check if plane and line intersect
+        has_nan = np.any(np.isnan(intersection_point))
+        has_inf = np.any(np.isinf(intersection_point))
+        # if they do, return the intersection point
+        # if they don't return False
+        #print("in plane_CR_intersection --> nan", has_nan, "inf", has_inf)
+        if has_nan or has_inf:
+            return np.array([False])
+        return intersection_point
+
+    def boundaryChecker(self, p):
+        tolerance = 0.0000000000001
+        width  = (self.width )/2. + tolerance
+        depth  = (self.depth )/2. + tolerance
+        height = (self.height)/2. + tolerance
+        #print("In boundary checking ----->", p, width, depth, height)
+        if p[0] > width :
+            #print("failed ", p[0], " > ", width)
+            return False
+        if p[0] < (-1.*width):
+            #print("failed ", p[0], " < ", -1.*width)
+            return False
+        if p[1] > depth :
+            #print("failed ", p[1], " > ", depth)
+            return False
+        if p[1] < (-1.*depth) :
+            #print("failed ", p[1], " < ", -1.*depth)
+            return False
+        if p[2] > height :
+            #print("failed ", p[2], " > ", height)
+            return False
+        if p[2] < (-1*height) :
+            #print("failed ", p[2], " < ", -1*height)
+            return False
+        return True
+    
     def calculateLenght(self):
-        length = 0.
-        return length
+        width  = self.width
+        depth  = self.depth
+        height = self.height
+        ends   = self.ends()
+        pl1    = np.array(ends[0])
+        pl2    = np.array(ends[1])
+        #print("calculate lenght")
+        crossing_point_list = []
+        p1 = [ 1, 0, height/2.]
+        p2 = [-1, 0, height/2.]
+        p3 = [ 0, 1, height/2.]
+        z_top = self.plane_CR_intersection(p1, p2, p3, pl1, pl2)
+        if np.any(z_top) and self.boundaryChecker(z_top):
+            crossing_point_list.append(z_top)
+        p1 = [ 1, 0, height/(-2.)]
+        p2 = [-1, 0, height/(-2.)]
+        p3 = [ 0, 1, height/(-2.)]
+        z_bottom = self.plane_CR_intersection(p1, p2, p3, pl1, pl2)
+        if np.any(z_bottom) and self.boundaryChecker(z_bottom):
+            crossing_point_list.append(z_bottom)
+        p1 = [ 1, depth/2., 0]
+        p2 = [-1, depth/2., 0]
+        p3 = [ 0, depth/2., 1]
+        y_top = self.plane_CR_intersection(p1, p2, p3, pl1, pl2)
+        if np.any(y_top) and self.boundaryChecker(y_top):
+            crossing_point_list.append(y_top)
+        p1 = [ 1, depth/(-2.), 0]
+        p2 = [-1, depth/(-2.), 0]
+        p3 = [ 0, depth/(-2.), 1]
+        y_bottom = self.plane_CR_intersection(p1, p2, p3, pl1, pl2)
+        if np.any(y_bottom) and self.boundaryChecker(y_bottom):
+            crossing_point_list.append(y_bottom)
+        p1 = [width/2.   , 0, 1 ]
+        p2 = [width/2.   , 0,-1 ]
+        p3 = [width/2.   , 1, 0 ]
+        x_top = self.plane_CR_intersection(p1, p2, p3, pl1, pl2)
+        if np.any(x_top) and self.boundaryChecker(x_top):
+            crossing_point_list.append(x_top)
+        p1 = [width/(-2.), 0, 1 ]
+        p2 = [width/(-2.), 0,-1 ]
+        p3 = [width/(-2.), 1, 0 ]
+        x_bottom = self.plane_CR_intersection(p1, p2, p3, pl1, pl2)
+        if np.any(x_bottom) and self.boundaryChecker(x_bottom):
+            crossing_point_list.append(x_bottom)
+        if len(crossing_point_list) == 0:
+            #print("Not crossing")
+            return -99999. 
+        if len(crossing_point_list) != 2:
+            print("Debug")
+            print(crossing_point_list, len(crossing_point_list))
+            print("Impossible result, GO FIND THIS BUG.... ")
+            print("x_top    ",x_top, self.boundaryChecker(x_top))
+            print("x_bottom ",x_bottom, self.boundaryChecker(x_bottom))
+            print("y_top    ",y_top, self.boundaryChecker(y_top))
+            print("y_bottom ",y_bottom, self.boundaryChecker(y_bottom))
+            print("z_top    ",z_top, self.boundaryChecker(z_top))
+            print("z_bottom ",z_bottom, self.boundaryChecker(z_bottom))
+            print()
+            print(self.x , self.y ,  self.z , np.degrees(self.theta) , np.degrees(self.phi))
+            print()
+            return -99999.
+        calculated_length =  np.linalg.norm(crossing_point_list[0] - crossing_point_list[1])
+        #print("Lenght ------------->", calculated_length)
+        return calculated_length
+
+
 
 class EventWriter:
     def __init__(self, filename):

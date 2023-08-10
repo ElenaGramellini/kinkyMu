@@ -5,7 +5,7 @@ from utilities import EventWriter
 from vis import Display
 import time
 import argparse
-
+import numpy as np
 # Create an argument parser
 parser = argparse.ArgumentParser(description='A script to demonstrate argparse.')
 # Add an argument for an integer
@@ -15,7 +15,7 @@ args = parser.parse_args()
 
 
 # Do I want a small display of the cosmic rays?
-DISPLAY = False
+DISPLAY = True
 # Number of events to be generated
 # Get the value of the 'number' argument
 Nevt = args.Nevts
@@ -71,7 +71,6 @@ for i in range(Nevt):
 
     # Write important bits to file
     event_writer.writeEvent([i, this_energy, this_length, this_theta])
-
     # The following array are for plotting purposes only
     x      .append(this_x      )
     y      .append(this_y      )
@@ -80,11 +79,10 @@ for i in range(Nevt):
     theta  .append(this_theta  )
     phi    .append(this_phi    )
     length .append(this_length )
-    
     # Let's add a little display tool
-    if i < 10 and DISPLAY:
+    if i < 10 and DISPLAY :
         display.plot_line(cr.ends()) # beginning and end of line
-
+        
 end_time = time.time()
 # Calculate the execution time
 execution_time = (end_time - start_time)/60.
