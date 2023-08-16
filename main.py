@@ -37,48 +37,48 @@ pDUNE.describe()
 # let's define a cosmic ray
 cr = CosmicRay(pDUNE)
 
-x      = []
-y      = []
-z      = []
-energy = []
-theta  = []
-phi    = []
-length = []
+x        = []
+y        = []
+z        = []
+momentum = []
+theta    = []
+phi      = []
+length   = []
 
 
 
 # Open and write output file
 # Create an instance of the EventWriter class and specify the filename
-event_writer = EventWriter('CR_Energy_L_events.csv')
+event_writer = EventWriter('CR_Momentum_L_events.csv')
 # Define the metadata for the CSV file
 metadata = [cr.metadata(), pDUNE.get_dimensions(), pDUNE.get_center()]
 event_writer.metadataWriter(metadata)
 # Define the header for the CSV file
-header = ['Event_ID', 'Energy', 'Lenght', 'Theta']
+header = ['Event_ID', 'Momentum', 'Lenght', 'Theta']
 # Write the header to the CSV file
 event_writer.headerWriter(header)
 
 # Let's generate Nevt events
 for i in range(Nevt):
     cr = CosmicRay(pDUNE) # I need to re-call to regenerate the random number
-    this_x      = cr.x      
-    this_y      = cr.y      
-    this_z      = cr.z      
-    this_energy = cr.energy 
-    this_theta  = cr.theta  
-    this_phi    = cr.phi    
-    this_length = cr.calculateLenght()
+    this_x        = cr.x      
+    this_y        = cr.y      
+    this_z        = cr.z      
+    this_momentum = cr.momentum 
+    this_theta    = cr.theta  
+    this_phi      = cr.phi    
+    this_length   = cr.calculateLenght()
 
     # Write important bits to file
-    event_writer.writeEvent([i, this_energy, this_length, this_theta])
+    event_writer.writeEvent([i, this_momentum, this_length, this_theta])
     # The following array are for plotting purposes only
-    x      .append(this_x      )
-    y      .append(this_y      )
-    z      .append(this_z      )
-    energy .append(this_energy )
-    theta  .append(this_theta  )
-    phi    .append(this_phi    )
-    length .append(this_length )
+    x       .append(this_x      )
+    y       .append(this_y      )
+    z       .append(this_z      )
+    momentum.append(this_momentum )
+    theta   .append(this_theta  )
+    phi     .append(this_phi    )
+    length  .append(this_length )
     # Let's add a little display tool
     if i < 10 and DISPLAY :
         display.plot_line(cr.ends()) # beginning and end of line
@@ -105,8 +105,8 @@ axs[0, 2].hist(z)
 axs[0, 2].set_title('z [m]')
 
 # Plot in the fourth subplot (bottom-left)
-axs[1, 0].hist(energy)
-axs[1, 0].set_title('Energy [GeV]')
+axs[1, 0].hist(momentum)
+axs[1, 0].set_title('Momentum [GeV/c]')
 
 # Plot in the fifth subplot (bottom-center)
 axs[1, 1].hist(theta)

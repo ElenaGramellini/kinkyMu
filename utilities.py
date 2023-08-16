@@ -54,15 +54,17 @@ class DetectorBox:
 
 
 class CosmicRay(DetectorBox):
-    def __init__(self, center_x, center_y, center_z, width, depth, height, energy, x, y, z, theta, phi):
+    def __init__(self, center_x, center_y, center_z, width, depth, height, momentum, x, y, z, theta, phi):
         super().__init__(center_x, center_y, center_z, width, depth, height)
-        self.energy = energy
+        self.momentum = momentum
         self.x = x
         self.y = y
         self.z = z
         self.theta = theta # in rad
         self.phi   = phi   # in rad
+        self.maxLength = self.calculateMaxLenght(momentum)
 
+        
     def __init__(self, box):
         super().__init__(box.center_x, box.center_y, box.center_z, box.width, box.depth, box.height)
         #self.x = random.uniform(-5*self.width, 5*self.width)
@@ -74,7 +76,7 @@ class CosmicRay(DetectorBox):
         self.zRange = [self.height/2., self.height/2.]
         self.thetaRange  = [0., 0.25*math.pi]
         self.phiRange    = [0., 2*math.pi]
-        self.energyRange = [1., 20.]
+        self.momentumRange = [1., 20.]
 
         # Define the throwing functions 
         self.x   = random.uniform(self.xRange[0], self.xRange[1])
@@ -89,11 +91,12 @@ class CosmicRay(DetectorBox):
         #r = np.random.multivariate_normal(mean, cov, 1).T
         
         self.theta  =  np.random.normal(self.thetaRange[0], self.thetaRange[1],1)[0]  
-        self.energy =  random.uniform(self.energyRange[0], self.energyRange[1])  
-        #print (self.energy,  self.theta)
+        self.momentum =  random.uniform(self.momentumRange[0], self.momentumRange[1])
+        self.maxLength = self.calculateMaxLenght()
+        #print (self.momentum,  self.theta)
 
     def metadata(self):
-        #data = [CR distribution x, y, z, theta, Energy,
+        #data = [CR distribution x, y, z, theta, Momentum,
         #        Detector w, l, h, pos x, pos y, pos z]        
         line = "## The CR distribution is: \n"
         line += "## " + "uniform"  + " in x      between "+ str(self.xRange) + "\n"   
@@ -101,13 +104,13 @@ class CosmicRay(DetectorBox):
         line += "## " + "uniform"  + " in z      between "+ str(self.zRange) + "\n"   
         line += "## " + "uniform"  + " in phi    between "+ str(self.phiRange)    + "\n"   
         line += "## " + "gaussian" + " in theta  between "+ str(self.thetaRange)  + "\n"   
-        line += "## " + "uniform"  + " in energy between "+ str(self.energyRange) + "\n"  
+        line += "## " + "uniform"  + " in momentum between "+ str(self.momentumRange) + "\n"  
         return line
 
-            
+
     def display_info(self):
         print("Cosmic Ray Information:")
-        print("Energy:", self.Energy)
+        print("Momentum:", self.momentum)
         print("Position (x, y, z):", self.x, self.y, self.z)
         print("Angles (theta, phi):", self.theta, self.phi)
 
@@ -225,6 +228,10 @@ class CosmicRay(DetectorBox):
             return False
         return True
     
+    def calculateMaxLenght(self):
+        length = self.momentum
+        return length
+
     def calculateLenght(self):
         width  = self.width
         depth  = self.depth
@@ -288,6 +295,8 @@ class CosmicRay(DetectorBox):
             print()
             return -99999.
         calculated_length =  np.linalg.norm(crossing_point_list[0] - crossing_point_list[1])
+        if calculated_length < self.maxLength:
+            return maxLength
         #print("Lenght ------------->", calculated_length)
         return calculated_length
 
