@@ -47,10 +47,12 @@ y_values = flux(t_values, 0, 1)
 df['fitFunc'] = flux(df['p'], 0, 1)
 df['scale'] = df['mu']/df['fitFunc']
 print(df['scale'].mean())
+print(df['scale'])
 
 
 # Create the plot
 plt.loglog(t_values, y_values, label='parametric function to be used in simulation')
+#plt.plot(t_values, y_values, label='parametric function to be used in simulation')
 plt.xlabel('Momentun P (GeV/c)')
 plt.ylabel('Muon flux [m-2sec-1sr-1(GeV/c)-1]')
 plt.title('Parametric Function: Flux')

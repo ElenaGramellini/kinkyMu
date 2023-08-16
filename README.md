@@ -22,16 +22,16 @@ What we need:
            The assumption is that the flux doesn't change in the azimuthal angle, and in height.  
      [ X ] Code the Phi (Energy, Polar Angle)
      [   ] Check it's correct against data reported in the paper
-          [   ] Find the data
-	  [   ] Solve normalization issue
+          [ X ] Find the data
+	  [ X ] Solve normalization issue --> we don't care about the normalization, cause we need a PDF
 [  ] the correct implementation of said muon flux
      [ X ] Write a simple (En, x,y,z,theta,phi) 6D flat distribution
      [ X ] Write a unit code that checks that flat distribution
      [ X ] Implement z = fixed, (x,y,phi) = flat,  (En, theta) = Phi(En,theta) generator
      [   ] Write a random Generator of the flux (En, theta) = Phi(En,theta) generator	
-     [   ] Check I get what I want with the unit code
-[  ] to calculate the lenght inside mock detector
-[  ] to check the calculation is correct
+
+[ X ] to calculate the lenght inside mock detector
+[ X ] to check the calculation is correct
      [   ] Check I get what I want with the unit code
 
 [ X ] write output file
