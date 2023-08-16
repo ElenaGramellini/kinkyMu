@@ -62,7 +62,6 @@ class CosmicRay(DetectorBox):
         self.z = z
         self.theta = theta # in rad
         self.phi   = phi   # in rad
-        self.maxLength = self.calculateMaxLenght(momentum)
 
         
     def __init__(self, box):
@@ -92,7 +91,7 @@ class CosmicRay(DetectorBox):
         
         self.theta  =  np.random.normal(self.thetaRange[0], self.thetaRange[1],1)[0]  
         self.momentum =  random.uniform(self.momentumRange[0], self.momentumRange[1])
-        self.maxLength = self.calculateMaxLenght()
+
         #print (self.momentum,  self.theta)
 
     def metadata(self):
@@ -295,7 +294,8 @@ class CosmicRay(DetectorBox):
             print()
             return -99999.
         calculated_length =  np.linalg.norm(crossing_point_list[0] - crossing_point_list[1])
-        if calculated_length < self.maxLength:
+        maxLength = self.calculateMaxLenght()
+        if calculated_length < maxLength:
             return maxLength
         #print("Lenght ------------->", calculated_length)
         return calculated_length
