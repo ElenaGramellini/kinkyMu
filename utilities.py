@@ -2,6 +2,7 @@ import math
 import random
 import numpy as np
 import csv
+import pandas as pd
 
 
 class DetectorBox:
@@ -227,11 +228,14 @@ class CosmicRay(DetectorBox):
             return False
         return True
     
-    def calculateMaxLenght(self):
-        length = self.momentum
-        return length
+    def calculateMaxLength(self):
+        momentum = self.momentum    # needs to be in MeV/c
+        df = pd.read_csv('muon_track_length.csv', skiprows=1)
+        csda_range = df[df['p'] <= momentum]['CSDA range'].iloc[-1]   # g/cm^2
+        length = csda_range/1.396   # cm
+        return length/100   # m
 
-    def calculateLenght(self):
+    def calculateLength(self):
         width  = self.width
         depth  = self.depth
         height = self.height
@@ -294,10 +298,10 @@ class CosmicRay(DetectorBox):
             print()
             return -99999.
         calculated_length =  np.linalg.norm(crossing_point_list[0] - crossing_point_list[1])
-        maxLength = self.calculateMaxLenght()
+        maxLength = self.calculateMaxLength()
         if calculated_length < maxLength:
             return maxLength
-        #print("Lenght ------------->", calculated_length)
+        #print("Length ------------->", calculated_length)
         return calculated_length
 
 
